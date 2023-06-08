@@ -32,3 +32,12 @@ jobs:
 
     - name: Run Python script
       run: python test.py
+
+    - name: Download and compile Java Maven sources
+      run: |
+        git clone https://github.com/VladimirMic/VMFSMetricSpace.git
+        cd VMFSMetricSpace
+        mvn clean install
+
+      
+
