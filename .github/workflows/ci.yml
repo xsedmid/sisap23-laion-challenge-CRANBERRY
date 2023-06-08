@@ -1,0 +1,25 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - master  # Replace with your branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11  # Replace with your desired Python version
+
+    #- name: Install dependencies
+    #  run: pip install -r requirements.txt  # Replace with your requirements file path
+
+    - name: Run Python script
+      run: python test.py  # Replace with the path to your Python script
