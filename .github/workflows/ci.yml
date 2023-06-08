@@ -11,15 +11,24 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.11  # Replace with your desired Python version
 
     - name: Install dependencies
       run: pip install -r requirements.txt  # Replace with your requirements file path
 
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'oracle'
+      
+    - name: Compile Java code
+      run: javac TestJavaClass.java
+
     - name: Run Python script
-      run: python test.py  # Replace with the path to your Python script
+      run: python test.py
