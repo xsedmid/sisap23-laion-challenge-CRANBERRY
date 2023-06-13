@@ -66,9 +66,14 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     print(f"  {query_orig}")
     print(f"  {query}")
 
+    print(f'Current path: {os.getcwd()}')
+    # Print all files in the current directory
+    print(f'Files in current directory: {os.listdir()}')
+    print(f'VMTrials path: {os.path.join(os.getcwd(), "VMTrials").listdir()}')
+
     start = time.time()
     #subprocess.check_output(['java', '-cp', 'VMTrials', 'vm.vmtrials.tripleFiltering_Challenge.Main', root_data_folder, dataset_orig, dataset, query_orig, query], universal_newlines=True)
-    subprocess.check_output(['java', '-cp', 'VMTrials', 'vm.vmtrials.tripleFiltering_Challenge.Main', dataset_orig, dataset, query_orig, query], universal_newlines=True)
+    subprocess.check_output(['java', '-cp', 'VMTrials', 'vm.vmtrials.tripleFiltering_Challenge.Main', dataset_orig, dataset, query_orig, query, '1'], universal_newlines=True)
 
     elapsed_build = time.time() - start
     print(f"*** Done in {elapsed_build}s.")
