@@ -30,8 +30,11 @@ jobs:
     - name: Compile Java code
       run: javac TestJavaClass.java
 
-    - name: Run Python script
+    - name: Run Python test script
       run: python test.py
+
+    - name: Run Python test search script
+      run: python search.py
 
     - name: Download and compile Vlada's Java Maven sources
       run: |
