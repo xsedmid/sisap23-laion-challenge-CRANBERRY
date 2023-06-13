@@ -52,6 +52,9 @@ jobs:
         mvn clean install
         cd ..
         git clone https://github.com/VladimirMic/2023_SISAP_Challenge_data.git
+        cd 2023_SISAP_Challenge_data
+        mv Similarity_search ../
+        cd ..
 
     - name: Run Python search script
       run: python search.py
