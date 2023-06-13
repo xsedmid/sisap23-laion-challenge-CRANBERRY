@@ -13,20 +13,20 @@ def download(src, dst):
         urlretrieve(src, dst)
 
 def prepare(root_data_folder, kind, size):
-    url = "https://sisap-23-challenge.s3.amazonaws.com/SISAP23-Challenge"
-    task = {
-        "dataset_orig": f"{url}/laion2B-en-clip768v2-n={size}.h5",
-        "dataset": f"{url}/laion2B-en-{kind}-n={size}.h5",
-        "query_orig": f"{url}/public-queries-10k-clip768v2.h5",
-        "query": f"{url}/public-queries-10k-{kind}.h5"
+    dataset_url = "https://sisap-23-challenge.s3.amazonaws.com/SISAP23-Challenge"
+    data_file_dict = {
+        "dataset_orig": f"laion2B-en-clip768v2-n={size}.h5",
+        "dataset": f"laion2B-en-{kind}-n={size}.h5",
+        "query_orig": f"public-queries-10k-clip768v2.h5",
+        "query": f"public-queries-10k-{kind}.h5"
     }
 
-    for version, url in task.items():
-        result_file_path = os.path.join(root_data_folder, kind, size, f"{version}.h5")
-        if not os.path.exists(result_file_path):
-            download(url, result_file_path)
-    
-    return task["dataset_orig"], task["dataset"]
+    for version, file_name in data_file_dict.items():
+        result_file_path = os.path.join(root_data_folder, file_name)
+        if version.startswith("public-q") or (not os.path.exists(result_file_path)):
+            download(f"{dataset_url}/{file_name}", result_file_path)
+
+    return data_file_dict
 
 def store_results(dst, algo, kind, D, I, buildtime, querytime, params, size):
     os.makedirs(Path(dst).parent, exist_ok=True)
@@ -44,7 +44,7 @@ def store_results(dst, algo, kind, D, I, buildtime, querytime, params, size):
 def run(root_data_folder, kind, key, size="100K", k=30):
     print("Running", kind)
     
-    dataset_orig, dataset = prepare(root_data_folder, kind, size)
+    data_file_dict = prepare(root_data_folder, kind, size)
 
     #data = np.array(h5py.File(os.path.join("data", kind, size, "dataset.h5"), "r")[key])
     #queries = np.array(h5py.File(os.path.join("data", kind, size, "query.h5"), "r")[key])
@@ -55,8 +55,10 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     print(f"*** Running Java-based implementation (building the index + searching)...")
     print(f"*** args:")
     print(f"  {root_data_folder}")
-    print(f"  {dataset_orig}")
-    print(f"  {dataset}")
+    print(f"  {data_file_dict['dataset_orig']}")
+    print(f"  {data_file_dict['dataset']}")
+    print(f"  {data_file_dict['query_orig']}")
+    print(f"  {data_file_dict['query']}")
     start = time.time()
 
 
