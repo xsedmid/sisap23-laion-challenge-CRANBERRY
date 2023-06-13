@@ -51,6 +51,7 @@ jobs:
         cd VMTrials
         mvn clean install
         cd ..
+        git clone https://github.com/VladimirMic/2023_SISAP_Challenge_data.git
 
     - name: Run Python search script
       run: python search.py

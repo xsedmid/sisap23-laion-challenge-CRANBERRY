@@ -47,15 +47,15 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     
     data_file_dict = prepare(root_data_folder, kind, size)
 
-    # Download pivots
-    pivot_file = "laion2B-en-clip768v2-n=100M.h5_2048pivots.gz"
-    pivots_url = f"https://www.fi.muni.cz/~xsedmid/temp/{pivot_file}"
-    pivot_dir = os.path.join(root_data_folder, 'Dataset', 'Pivot')
+    # # Download pivots
+    # pivot_file = "laion2B-en-clip768v2-n=100M.h5_2048pivots.gz"
+    # pivots_url = f"https://www.fi.muni.cz/~xsedmid/temp/{pivot_file}"
+    # pivot_dir = os.path.join(root_data_folder, 'Dataset', 'Pivot')
 
-    # Create pivot directory if it does not exist
-    if not os.path.exists(pivot_dir):
-        os.makedirs(pivot_dir, exist_ok=True)
-    download(pivots_url, os.path.join(pivot_dir, pivot_file))
+    # # Create pivot directory if it does not exist
+    # if not os.path.exists(pivot_dir):
+    #     os.makedirs(pivot_dir, exist_ok=True)
+    # download(pivots_url, os.path.join(pivot_dir, pivot_file))
 
 
     #data = np.array(h5py.File(os.path.join("data", kind, size, "dataset.h5"), "r")[key])
