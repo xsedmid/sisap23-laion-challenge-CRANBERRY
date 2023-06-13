@@ -70,6 +70,10 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     # Print all files in the current directory
     print(f'Files in current directory: {os.listdir()}')
     #print(f'VMTrials path: {os.path.join(os.getcwd(), "VMTrials").listdir()}')
+    class_files = os.path.join(os.getcwd(), 'VMTrials', 'target', 'classes', 'vm').listdir()
+    print(class_files)
+    class_files = os.path.join(os.getcwd(), 'VMTrials', 'target', 'classes', 'metricSpace').listdir()
+    print(class_files)
 
     start = time.time()
     #subprocess.check_output(['java', '-cp', 'VMTrials', 'vm.vmtrials.tripleFiltering_Challenge.Main', root_data_folder, dataset_orig, dataset, query_orig, query], universal_newlines=True)
