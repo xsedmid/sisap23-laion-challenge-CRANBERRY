@@ -33,9 +33,6 @@ jobs:
     - name: Run Python test script
       run: python test.py
 
-    - name: Run Python test search script
-      run: python search.py
-
     - name: Download and compile Vlada's Java Maven sources
       run: |
         git clone https://github.com/VladimirMic/VMGenericTools.git
@@ -55,5 +52,6 @@ jobs:
         mvn clean install
         cd ..
 
-      
-
+    - name: Run Python search script
+      run: python search.py
+  

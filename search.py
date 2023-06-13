@@ -3,6 +3,7 @@ import h5py
 import numpy as np
 import os
 from pathlib import Path
+import subprocess
 from urllib.request import urlretrieve
 import time 
 
@@ -52,15 +53,22 @@ def run(root_data_folder, kind, key, size="100K", k=30):
 
     # root_folder-similarity_search; h5 path: data768, data96pca, query768, query96pca
 
+    dataset_orig = os.path.join(root_data_folder, data_file_dict['dataset_orig'])
+    dataset = os.path.join(root_data_folder, data_file_dict['dataset'])
+    query_orig = os.path.join(root_data_folder, data_file_dict['query_orig'])
+    query = os.path.join(root_data_folder, data_file_dict['query'])
+
     print(f"*** Running Java-based implementation (building the index + searching)...")
     print(f"*** args:")
-    print(f"  {root_data_folder}")
-    print(f"  {data_file_dict['dataset_orig']}")
-    print(f"  {data_file_dict['dataset']}")
-    print(f"  {data_file_dict['query_orig']}")
-    print(f"  {data_file_dict['query']}")
-    start = time.time()
+    #print(f"  {root_data_folder}")
+    print(f"  {dataset_orig}")
+    print(f"  {dataset}")
+    print(f"  {query_orig}")
+    print(f"  {query}")
 
+    start = time.time()
+    #subprocess.check_output(['java', '-cp', 'VMTrials', 'vm.vmtrials.tripleFiltering_Challenge.Main', root_data_folder, dataset_orig, dataset, query_orig, query], universal_newlines=True)
+    subprocess.check_output(['java', '-cp', 'VMTrials', 'vm.vmtrials.tripleFiltering_Challenge.Main', dataset_orig, dataset, query_orig, query], universal_newlines=True)
 
     elapsed_build = time.time() - start
     print(f"*** Done in {elapsed_build}s.")
@@ -99,5 +107,5 @@ if __name__ == "__main__":
 
     assert args.size in ["100K", "300K", "10M", "30M", "100M"]
 
-    root_data_folder = "data"
+    root_data_folder = "Similarity_search"
     run(root_data_folder, "pca96v2", "pca96", args.size, args.k)
