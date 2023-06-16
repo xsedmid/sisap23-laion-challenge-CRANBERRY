@@ -58,6 +58,29 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     # download(pivots_url, os.path.join(pivot_dir, pivot_file))
 
 
+    # Test results
+    result_dir = os.path.join(root_data_folder, 'result')
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir, exist_ok=True)
+    result_file = 'test-result.csv'
+    download(f"https://www.fi.muni.cz/~xsedmid/temp/{result_file}", os.path.join(result_dir, result_file))
+
+    # Read result file with Pandas
+    import pandas as pd
+    df = pd.read_csv(os.path.join(result_dir, result_file), sep=';')
+    # Print the number of rows and columns
+    print(f'Test result file shape: {df.shape}')
+
+
+
+
+
+
+
+
+
+
+
     #data = np.array(h5py.File(os.path.join("data", kind, size, "dataset.h5"), "r")[key])
     #queries = np.array(h5py.File(os.path.join("data", kind, size, "query.h5"), "r")[key])
     #print(f'data.shape={data.shape}, queries.shape={queries.shape}')
