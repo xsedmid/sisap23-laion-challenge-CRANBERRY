@@ -62,7 +62,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     result_dir = os.path.join(root_data_folder, 'result')
     if not os.path.exists(result_dir):
         os.makedirs(result_dir, exist_ok=True)
-    result_file = 'test-result.csv'
+    result_file = 'test-res.csv'
     download(f"https://www.fi.muni.cz/~xsedmid/temp/{result_file}", os.path.join(result_dir, result_file))
 
     # Read result file with Pandas
