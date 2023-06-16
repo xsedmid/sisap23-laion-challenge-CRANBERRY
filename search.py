@@ -71,15 +71,16 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     # Print the number of rows and columns
     print(f'Test result file shape: {df.shape}')
 
+    algo = 'SimRelv1'
+    result_dst = os.path.join(result_dir, kind, size, f'{algo}.h5')
+    buildtime = 3000
+    querytime = 100
+    params = f'params of {algo}'
 
-
-
-
-
-
-
-
-
+    I = df.copy().applymap(lambda x: x.split(':')[0]).to_numpy()
+    D = df.copy().applymap(lambda x: x.split(':')[1]).to_numpy()
+    store_results(result_dst, algo, kind, D, I, buildtime, querytime, algo, size)
+    print('.h5 result file successfully created.')
 
     #data = np.array(h5py.File(os.path.join("data", kind, size, "dataset.h5"), "r")[key])
     #queries = np.array(h5py.File(os.path.join("data", kind, size, "query.h5"), "r")[key])
