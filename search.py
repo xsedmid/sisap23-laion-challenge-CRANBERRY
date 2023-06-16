@@ -67,7 +67,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
 
     # Read result file with Pandas
     import pandas as pd
-    df = pd.read_csv(os.path.join(result_dir, result_file), sep=';')
+    df = pd.read_csv(os.path.join(result_dir, result_file), skiprows=0, sep=';')
     # Print the number of rows and columns
     print(f'Test result file shape: {df.shape}')
 
@@ -77,8 +77,8 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     querytime = 100
     params = f'params of {algo}'
 
-    I = df.copy().applymap(lambda x: x.split(':')[0]).to_numpy()
-    D = df.copy().applymap(lambda x: x.split(':')[1]).to_numpy()
+    I = df.copy().applymap(lambda x: x.split(':')[0]).astype(int).to_numpy()
+    D = df.copy().applymap(lambda x: x.split(':')[1]).astype(float).to_numpy()
     store_results(result_dst, algo, kind, D, I, buildtime, querytime, algo, size)
     print('.h5 result file successfully created.')
 
