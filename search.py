@@ -84,21 +84,28 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     # print(class_files)
 
     start = time.time()
-    subprocess.check_output(['java', '-Xmx32g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
+    output_params = subprocess.check_output(['java', '-Xmx32g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
 
     elapsed_build = time.time() - start
     print(f"*** Done in {elapsed_build}s.")
+
+    # Convert output params to dictionary
+    output_params = dict(item.split(":") for item in output_params.strip().split(";"))
+    print(f"*** output_params: {output_params}")
     
     # conversion of .csv results to .h5 format
     #result_dir = os.path.join(root_data_folder, 'result')
+    import shutil
+    algorithm_result_dir = os.path.join(root_data_folder, 'Result')
     result_dir = 'result'
-    # Test results
     if not os.path.exists(result_dir):
         os.makedirs(result_dir, exist_ok=True)
-    result_file = 'test-res.csv'
+    result_file = f"{data_file_dict['dataset_orig'][1]}_{data_file_dict['query_orig'][1]}.csv"
     result_file_path = os.path.join(result_dir, result_file)
-    if not os.path.exists(result_file_path):
-        download(f"https://www.fi.muni.cz/~xsedmid/temp/{result_file}", result_file_path)
+    # if not os.path.exists(result_file_path):
+    #     download(f"https://www.fi.muni.cz/~xsedmid/temp/{result_file}", result_file_path)
+    shutil.copyfile(os.path.join(algorithm_result_dir, result_file), result_file_path)
+    print(f'Processing result file: {result_file_path}')
 
     # Read result file with Pandas
     import pandas as pd
@@ -108,9 +115,9 @@ def run(root_data_folder, kind, key, size="100K", k=30):
 
     algo = 'SimRelv1'
     result_dst = os.path.join(result_dir, kind, size, f'{algo}.h5')
-    buildtime = 3000
-    querytime = 100
-    params = f'params of {algo}'
+    buildtime = output_params['buildtime']
+    querytime = output_params['querytime']
+    params = f'params of {algo}: []'
 
     I = df.copy().applymap(lambda x: x.split(':')[0]).astype(int).to_numpy()
     D = df.copy().applymap(lambda x: x.split(':')[1]).astype(float).to_numpy()
