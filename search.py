@@ -115,7 +115,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     I = df.copy().applymap(lambda x: x.split(':')[0]).astype(int).to_numpy()
     D = df.copy().applymap(lambda x: x.split(':')[1]).astype(float).to_numpy()
     store_results(result_dst, algo, kind, D, I, buildtime, querytime, algo, size)
-    print('.h5 result file successfully created.')
+    print(f'.h5 result file successfully created: {result_dst}')
 
 if __name__ == "__main__":
 
