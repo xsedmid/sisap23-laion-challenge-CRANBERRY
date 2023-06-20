@@ -106,7 +106,6 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     
     # conversion of .csv results to .h5 format
     import shutil
-    print(f'Processing result file: {result_file_path}')
     algorithm_result_dir = os.path.join(root_data_folder, 'Result')
     result_dir = 'result'
     result_dst = os.path.join(result_dir, kind, size, f'{algo}.h5')
@@ -114,6 +113,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
         os.makedirs(result_dir, exist_ok=True)
     result_file = f"{data_file_dict['dataset_orig'][1]}_{data_file_dict['query_orig'][1]}.csv"
     result_file_path = os.path.join(result_dir, result_file)
+    print(f'Processing result file: {result_file_path}')
     # if not os.path.exists(result_file_path):
     #     download(f"https://www.fi.muni.cz/~xsedmid/temp/{result_file}", result_file_path)
     shutil.copyfile(os.path.join(algorithm_result_dir, result_file), result_file_path)
