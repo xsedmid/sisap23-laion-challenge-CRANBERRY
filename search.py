@@ -60,36 +60,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     # download(pivots_url, os.path.join(pivot_dir, pivot_file))
 
 
-    # Test results
-    result_dir = os.path.join(root_data_folder, 'result')
-    if not os.path.exists(result_dir):
-        os.makedirs(result_dir, exist_ok=True)
-    result_file = 'test-res.csv'
-    download(f"https://www.fi.muni.cz/~xsedmid/temp/{result_file}", os.path.join(result_dir, result_file))
-
-    # Read result file with Pandas
-    import pandas as pd
-    df = pd.read_csv(os.path.join(result_dir, result_file), skiprows=0, sep=';')
-    # Print the number of rows and columns
-    print(f'Test result file shape: {df.shape}')
-
-    algo = 'SimRelv1'
-    result_dst = os.path.join(result_dir, kind, size, f'{algo}.h5')
-    buildtime = 3000
-    querytime = 100
-    params = f'params of {algo}'
-
-    I = df.copy().applymap(lambda x: x.split(':')[0]).astype(int).to_numpy()
-    D = df.copy().applymap(lambda x: x.split(':')[1]).astype(float).to_numpy()
-    store_results(result_dst, algo, kind, D, I, buildtime, querytime, algo, size)
-    print('.h5 result file successfully created.')
-
-    #data = np.array(h5py.File(os.path.join("data", kind, size, "dataset.h5"), "r")[key])
-    #queries = np.array(h5py.File(os.path.join("data", kind, size, "query.h5"), "r")[key])
-    #print(f'data.shape={data.shape}, queries.shape={queries.shape}')
-
-    # root_folder-similarity_search; h5 path: data768, data96pca, query768, query96pca
-
+    # Build index
     dataset_orig = os.path.join(data_file_dict['dataset_orig'][0], data_file_dict['dataset_orig'][1])
     dataset = os.path.join(data_file_dict['dataset'][0], data_file_dict['dataset'][1])
     query_orig = os.path.join(data_file_dict['query_orig'][0], data_file_dict['query_orig'][1])
@@ -113,31 +84,38 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     # print(class_files)
 
     start = time.time()
-    #subprocess.check_output(['java', '-cp', 'VMTrials', 'vm.vmtrials.tripleFiltering_Challenge.Main', root_data_folder, dataset_orig, dataset, query_orig, query], universal_newlines=True)
-    #subprocess.check_output(['java', '-cp', os.path.join(os.getcwd(), 'VMTrials', 'target', 'classes'), 'vm.vmtrials.tripleFiltering_Challenge.Main', dataset_orig, dataset, query_orig, query, '1'], universal_newlines=True)
-    #subprocess.check_output(['java', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), 'vm.vmtrials.tripleFiltering_Challenge.Main', dataset_orig, dataset, query_orig, query, '1'], universal_newlines=True)
-    subprocess.check_output(['java', '-Xmx32g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
+    #subprocess.check_output(['java', '-Xmx32g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
 
     elapsed_build = time.time() - start
     print(f"*** Done in {elapsed_build}s.")
     
     # conversion of .csv results to .h5 format
+    #result_dir = os.path.join(root_data_folder, 'result')
+    result_dir = 'result'
+    # Test results
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir, exist_ok=True)
+    result_file = 'test-res.csv'
+    result_file_path = os.path.join(result_dir, result_file)
+    if not os.path.exists(result_file_path):
+        download(f"https://www.fi.muni.cz/~xsedmid/temp/{result_file}", result_file_path)
 
+    # Read result file with Pandas
+    import pandas as pd
+    df = pd.read_csv(result_file_path, skiprows=0, sep=';')
+    # Print the number of rows and columns
+    print(f'Test result file shape: {df.shape}')
 
+    algo = 'SimRelv1'
+    result_dst = os.path.join(result_dir, kind, size, f'{algo}.h5')
+    buildtime = 3000
+    querytime = 100
+    params = f'params of {algo}'
 
-    # for nprobe in [1, 2, 5, 10, 20, 50, 100]:
-    #     print(f"Starting search on {queries.shape} with nprobe={nprobe}")
-    #     start = time.time()
-    #     index.nprobe = nprobe
-    #     D, I = index.search(queries, k)
-    #     elapsed_search = time.time() - start
-    #     print(f"Done searching in {elapsed_search}s.")
-
-    #     I = I + 1 # FAISS is 0-indexed, groundtruth is 1-indexed
-
-    #     identifier = f"index=({index_identifier}),query=(nprobe={nprobe})"
-
-    # store_results(os.path.join("result/", kind, size, f"{identifier}.h5"), "faissIVF", kind, D, I, elapsed_build, elapsed_search, identifier, size)
+    I = df.copy().applymap(lambda x: x.split(':')[0]).astype(int).to_numpy()
+    D = df.copy().applymap(lambda x: x.split(':')[1]).astype(float).to_numpy()
+    store_results(result_dst, algo, kind, D, I, buildtime, querytime, algo, size)
+    print('.h5 result file successfully created.')
 
 if __name__ == "__main__":
 
