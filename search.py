@@ -16,16 +16,18 @@ def download(src, dst):
 def prepare(root_data_folder, kind, size):
     dataset_url = "https://sisap-23-challenge.s3.amazonaws.com/SISAP23-Challenge"
     data_file_dict = {
-        "dataset_orig": f"laion2B-en-clip768v2-n={size}.h5",
-        "dataset": f"laion2B-en-{kind}-n={size}.h5",
-        "query_orig": f"public-queries-10k-clip768v2.h5",
-        "query": f"public-queries-10k-{kind}.h5"
+        "dataset_orig": [os.path.join(root_data_folder, 'Dataset', 'Dataset'), f"laion2B-en-clip768v2-n={size}.h5"],
+        "dataset": [os.path.join(root_data_folder, 'Dataset', 'Dataset'), f"laion2B-en-{kind}-n={size}.h5"],
+        "query_orig": [os.path.join(root_data_folder, 'Dataset', 'Query'), f"public-queries-10k-clip768v2.h5"],
+        "query": [os.path.join(root_data_folder, 'Dataset', 'Query'), f"public-queries-10k-{kind}.h5"]
     }
 
-    for version, file_name in data_file_dict.items():
-        result_file_path = os.path.join(root_data_folder, file_name)
-        if version.startswith("public-q") or (not os.path.exists(result_file_path)):
-            download(f"{dataset_url}/{file_name}", result_file_path)
+    for version, file_spec in data_file_dict.items():
+        result_file_path = os.path.join(file_spec[0], file_spec[1])
+        if version.startswith("query") or (not os.path.exists(result_file_path)):
+            download(f"{dataset_url}/{file_spec[1]}", result_file_path)
+        else:
+            print(f"File '{result_file_path}' already exists, skipping download.")
 
     return data_file_dict
 
@@ -88,10 +90,10 @@ def run(root_data_folder, kind, key, size="100K", k=30):
 
     # root_folder-similarity_search; h5 path: data768, data96pca, query768, query96pca
 
-    dataset_orig = os.path.join(root_data_folder, data_file_dict['dataset_orig'])
-    dataset = os.path.join(root_data_folder, data_file_dict['dataset'])
-    query_orig = os.path.join(root_data_folder, data_file_dict['query_orig'])
-    query = os.path.join(root_data_folder, data_file_dict['query'])
+    dataset_orig = os.path.join(data_file_dict['dataset_orig'][0], data_file_dict['dataset_orig'][1])
+    dataset = os.path.join(data_file_dict['dataset'][0], data_file_dict['dataset'][1])
+    query_orig = os.path.join(data_file_dict['query_orig'][0], data_file_dict['query_orig'][1])
+    query = os.path.join(data_file_dict['query'][0], data_file_dict['query'][1])
 
     print(f"*** Running Java-based implementation (building the index + searching)...")
     print(f"*** args:")
