@@ -84,7 +84,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     # print(class_files)
 
     start = time.time()
-    subprocess.check_output(['java', '-Xmx32g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
+    subprocess.check_output(['java', '-Xmx256g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
 
     elapsed_build = time.time() - start
     print(f"*** Done in {elapsed_build}s.")
@@ -96,8 +96,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
         output_params = f.read()
         output_params = dict(item.split(":") for item in output_params.strip().split(";"))
         print(f"*** output_params: {output_params}")
-    algo = 'SimRelv1'
-    result_dst = os.path.join(result_dir, kind, size, f'{algo}.h5')
+    algo = 'SimRELv1'
     buildtime = output_params['buildtime']
     querytime = output_params['querytime']
     if 'params' in output_params:
@@ -110,6 +109,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     print(f'Processing result file: {result_file_path}')
     algorithm_result_dir = os.path.join(root_data_folder, 'Result')
     result_dir = 'result'
+    result_dst = os.path.join(result_dir, kind, size, f'{algo}.h5')
     if not os.path.exists(result_dir):
         os.makedirs(result_dir, exist_ok=True)
     result_file = f"{data_file_dict['dataset_orig'][1]}_{data_file_dict['query_orig'][1]}.csv"
