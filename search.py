@@ -90,7 +90,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     print(f"*** Done in {elapsed_build}s.")
 
     # Convert output params to dictionary
-    output_params_file_path = os.path.join(root_data_folder, 'Result', f"{data_file_dict['dataset_orig'][1]}_{data_file_dict['query_orig'][1]}-run_params.csv")
+    output_params_file_path = os.path.join(root_data_folder, 'Result', f"{data_file_dict['dataset_orig'][1]}_{data_file_dict['query_orig'][1]}_run_params.csv")
     # Read output params file to dictionary
     with open(output_params_file_path, 'r') as f:
         output_params = f.read()
