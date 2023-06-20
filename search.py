@@ -126,8 +126,8 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     print(df)
     # I = df.copy().applymap(lambda x: x.split(':')[0]).astype(int).to_numpy()
     # D = df.copy().applymap(lambda x: x.split(':')[1]).astype(float).to_numpy()
-    I = df.copy().applymap(lambda x: x.split(':')[0]).to_numpy()
-    D = df.copy().applymap(lambda x: x.split(':')[1]).to_numpy()
+    I = df.copy().applymap(lambda x: x.split(':')[0]).astype(str).to_numpy()
+    D = df.copy().applymap(lambda x: x.split(':')[1]).astype(str).to_numpy()
     store_results(result_dst, algo, kind, D, I, buildtime, querytime, params, size)
     print(f'.h5 result file successfully created: {result_dst}')
 
