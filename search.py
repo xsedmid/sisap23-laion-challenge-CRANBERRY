@@ -84,14 +84,18 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     # print(class_files)
 
     start = time.time()
-    output_params = subprocess.check_output(['java', '-Xmx32g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
+    subprocess.check_output(['java', '-Xmx32g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
 
     elapsed_build = time.time() - start
     print(f"*** Done in {elapsed_build}s.")
 
     # Convert output params to dictionary
-    output_params = dict(item.split(":") for item in output_params.strip().split(";"))
-    print(f"*** output_params: {output_params}")
+    output_params_file_path = os.path.join(root_data_folder, 'Result', f"{data_file_dict['dataset_orig'][1]}_{data_file_dict['query_orig'][1]}-run_params.csv")
+    # Read output params file to dictionary
+    with open(output_params_file_path, 'r') as f:
+        output_params = f.read()
+        output_params = dict(item.split(":") for item in output_params.strip().split(";"))
+        print(f"*** output_params: {output_params}")
     
     # conversion of .csv results to .h5 format
     #result_dir = os.path.join(root_data_folder, 'result')
