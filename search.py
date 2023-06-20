@@ -84,7 +84,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     # print(class_files)
 
     start = time.time()
-    #subprocess.check_output(['java', '-Xmx32g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
+    subprocess.check_output(['java', '-Xmx32g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
 
     elapsed_build = time.time() - start
     print(f"*** Done in {elapsed_build}s.")
@@ -102,7 +102,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
 
     # Read result file with Pandas
     import pandas as pd
-    df = pd.read_csv(result_file_path, skiprows=0, sep=';')
+    df = pd.read_csv(result_file_path, header=None, skiprows=0, sep=';')
     # Print the number of rows and columns
     print(f'Test result file shape: {df.shape}')
 
