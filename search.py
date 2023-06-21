@@ -119,4 +119,4 @@ if __name__ == "__main__":
     assert args.size in ["100K", "300K", "10M", "30M", "100M"]
 
     root_data_folder = "Similarity_search"
-    run(root_data_folder, "pca96v2", "pca96", args.size, args.k, buildindex=args.buildindex)
+    run(root_data_folder, "pca96v2", "pca96", size=args.size, k=args.k, buildindex=args.buildindex)
