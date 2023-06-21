@@ -56,10 +56,10 @@ def run(root_data_folder, kind, key, size="100K", k=30, buildindex=True):
 
     # Run Java-based implementation (building the index + searching)...
     print(f"running Java-based implementation (building the index + searching)...")
-    dataset_size_dict = {"100K": 100000, "300K": 300000, "10M": 10000000, "30M": 30000000, "100M": 100000000}
-    print(f'* params: {dataset_orig_path}, {dataset_path}, {query_orig_path}, {query_path}, {dataset_size_dict[size]}, {buildindex}, {k}')
+    dataset_size_dict = {"100K": "100000", "300K": "300000", "10M": "10000000", "30M": "30000000", "100M": "100000000"}
+    print(f'* params: {dataset_orig_path}, {dataset_path}, {query_orig_path}, {query_path}, {dataset_size_dict[size]}, {"true" if buildindex else "false"}, {str(k)}')
     start_time = time.time()
-    subprocess.check_output(['java', '-Xmx256g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig_path, dataset_path, query_orig_path, query_path, dataset_size_dict[size], buildindex, k], universal_newlines=True)
+    subprocess.check_output(['java', '-Xmx256g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig_path, dataset_path, query_orig_path, query_path, dataset_size_dict[size], "true" if buildindex else "false", str(k)], universal_newlines=True)
     print(f"done in {time.time() - start_time}s")
 
     # Convert output params to dictionary
