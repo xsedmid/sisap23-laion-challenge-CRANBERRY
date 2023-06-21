@@ -44,58 +44,29 @@ def store_results(dst, algo, kind, D, I, buildtime, querytime, params, size):
     f.create_dataset('dists', D.shape, dtype=D.dtype)[:] = D
     f.close()
 
-def run(root_data_folder, kind, key, size="100K", k=30):
-    print("Running", kind)
+def run(root_data_folder, kind, key, size="100K", k=30, buildindex=True):
     
+    # Download the dataset and query files
     data_file_dict = prepare(root_data_folder, kind, size)
+    
+    dataset_orig_path = os.path.join(data_file_dict['dataset_orig'][0], data_file_dict['dataset_orig'][1])
+    dataset_path = os.path.join(data_file_dict['dataset'][0], data_file_dict['dataset'][1])
+    query_orig_path = os.path.join(data_file_dict['query_orig'][0], data_file_dict['query_orig'][1])
+    query_path = os.path.join(data_file_dict['query'][0], data_file_dict['query'][1])
 
-    # # Download pivots
-    # pivot_file = "laion2B-en-clip768v2-n=100M.h5_2048pivots.gz"
-    # pivots_url = f"https://www.fi.muni.cz/~xsedmid/temp/{pivot_file}"
-    # pivot_dir = os.path.join(root_data_folder, 'Dataset', 'Pivot')
-
-    # # Create pivot directory if it does not exist
-    # if not os.path.exists(pivot_dir):
-    #     os.makedirs(pivot_dir, exist_ok=True)
-    # download(pivots_url, os.path.join(pivot_dir, pivot_file))
-
-
-    # Build index
-    dataset_orig = os.path.join(data_file_dict['dataset_orig'][0], data_file_dict['dataset_orig'][1])
-    dataset = os.path.join(data_file_dict['dataset'][0], data_file_dict['dataset'][1])
-    query_orig = os.path.join(data_file_dict['query_orig'][0], data_file_dict['query_orig'][1])
-    query = os.path.join(data_file_dict['query'][0], data_file_dict['query'][1])
-
-    print(f"*** Running Java-based implementation (building the index + searching)...")
-    print(f"*** args:")
-    #print(f"  {root_data_folder}")
-    print(f"  {dataset_orig}")
-    print(f"  {dataset}")
-    print(f"  {query_orig}")
-    print(f"  {query}")
-
-    print(f'Current path: {os.getcwd()}')
-    # Print all files in the current directory
-    print(f'Files in current directory: {os.listdir()}')
-    #print(f'VMTrials path: {os.path.join(os.getcwd(), "VMTrials").listdir()}')
-    # class_files = os.path.join(os.getcwd(), 'VMTrials', 'target', 'classes', 'vm').listdir()
-    # print(class_files)
-    # class_files = os.path.join(os.getcwd(), 'VMTrials', 'target', 'classes', 'metricSpace').listdir()
-    # print(class_files)
-
-    start = time.time()
-    subprocess.check_output(['java', '-Xmx256g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig, dataset, query_orig, query, '100000'], universal_newlines=True)
-
-    elapsed_build = time.time() - start
-    print(f"*** Done in {elapsed_build}s.")
+    # Run Java-based implementation (building the index + searching)...
+    print(f"running Java-based implementation (building the index + searching)...")
+    dataset_size_dict = {"100K": 100000, "300K": 300000, "10M": 10000000, "30M": 30000000, "100M": 100000000}
+    start_time = time.time()
+    subprocess.check_output(['java', '-Xmx256g', '-jar', os.path.join(os.getcwd(), 'VMTrials', 'target', 'VMTrials-1.0-SNAPSHOT-jar-with-dependencies.jar'), dataset_orig_path, dataset_path, query_orig_path, query_path, dataset_size_dict[size], buildindex, k], universal_newlines=True)
+    print(f"done in {time.time() - start_time}s")
 
     # Convert output params to dictionary
     output_params_file_path = os.path.join(root_data_folder, 'Result', f"{data_file_dict['dataset_orig'][1]}_{data_file_dict['query_orig'][1]}_run_params.csv")
-    # Read output params file to dictionary
     with open(output_params_file_path, 'r') as f:
         output_params = f.read()
         output_params = dict(item.split(":") for item in output_params.strip().split(";"))
-        print(f"*** output_params: {output_params}")
+        print(f"output_params: {output_params}")
     algo = 'SimRELv1'
     buildtime = output_params['buildtime']
     querytime = output_params['querytime']
@@ -104,7 +75,7 @@ def run(root_data_folder, kind, key, size="100K", k=30):
     else:
         params = ''
     
-    # conversion of .csv results to .h5 format
+    # Convert CSV-based results to .h5 format
     import shutil
     algorithm_result_dir = os.path.join(root_data_folder, 'Result')
     result_dir = 'result'
@@ -113,25 +84,18 @@ def run(root_data_folder, kind, key, size="100K", k=30):
         os.makedirs(result_dir, exist_ok=True)
     result_file = f"{data_file_dict['dataset_orig'][1]}_{data_file_dict['query_orig'][1]}.csv"
     result_file_path = os.path.join(result_dir, result_file)
-    print(f'Processing result file: {result_file_path}')
-    # if not os.path.exists(result_file_path):
-    #     download(f"https://www.fi.muni.cz/~xsedmid/temp/{result_file}", result_file_path)
+    print(f'processing result file: {result_file_path}')
     shutil.copyfile(os.path.join(algorithm_result_dir, result_file), result_file_path)
 
-    # Read result file with Pandas
+    # Parse the result file with Pandas
     import pandas as pd
     df = pd.read_csv(result_file_path, header=None, skiprows=0, sep=';')
-    # Print the number of rows and columns
-    print(f'Test result file shape: {df.shape}')
-    print(df)
-    # I = df.copy().applymap(lambda x: x.split(':')[0]).astype(int).to_numpy()
-    # D = df.copy().applymap(lambda x: x.split(':')[1]).astype(float).to_numpy()
-    df = df.drop(df.columns[0], axis=1)
+    print(f'* result file shape: {df.shape}')
+    #df = df.drop(df.columns[0], axis=1) # Remove the first column with row numbers
     I = df.copy().applymap(lambda x: x.split(':')[0]).astype(int).to_numpy()
-    #I = np.transpose(I)
     D = df.copy().applymap(lambda x: x.split(':')[1]).astype(float).to_numpy()
-    #D = np.transpose(D)
-    print(f'I: {I.shape}; D: {D.shape}')
+    print(f"* shapes of 'knns' and 'dists' structures: {I.shape}; {D.shape}")
+    
     store_results(result_dst, algo, kind, D, I, buildtime, querytime, params, size)
     print(f'.h5 result file successfully created: {result_dst}')
 
@@ -146,10 +110,12 @@ if __name__ == "__main__":
         "--k",
         default=30,
     )
-
+    parser.add_argument(
+        "--buildindex",
+        default=True,
+    )
     args = parser.parse_args()
-
     assert args.size in ["100K", "300K", "10M", "30M", "100M"]
 
     root_data_folder = "Similarity_search"
-    run(root_data_folder, "pca96v2", "pca96", args.size, args.k)
+    run(root_data_folder, "pca96v2", "pca96", args.size, args.k, buildindex=args.buildindex)
