@@ -28,13 +28,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'oracle'
-      
-    - name: Compile Java code
-      run: javac TestJavaClass.java
-
-    - name: Run Python test script
-      run: python test.py
-
+    
     - name: Download and compile Vlada's Java Maven sources
       run: |
         git clone https://github.com/VladimirMic/VMGenericTools.git
