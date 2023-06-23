@@ -1,10 +1,10 @@
-# CRANBERRY -- algorithm participating in SISAP 23 LAION2B Challenge
+# CRANBERRY algorithm participating in SISAP 23 LAION2B Challenge
 
 This repository contains the sources and evaluation scripts of the **CRANBERRY** (sear**C**hing with the vo**R**onoi p**A**rtitio**N**ing, **B**inary sk**E**tches and **R**elational simila**R**it**Y**) algorithm participating in the [SISAP 2023 LAION2B Challenge](https://sisap-challenges.github.io/).
 
 ## Evaluation
 
-The evaluation of the algorithm is encapsulated in GitHub Actions. The provided [CI integration](https://github.com/xsedmid/test-Python2Java/blob/master/.github/workflows/ci.yml) installs requirements (including Java 17), downloads a specified dataset, builds an index on the specified dataset, executes *k*NN queries, and evaluates the results of *k*NN queries using the provided [evaluation script](https://github.com/sisap-challenges/sisap23-laion-challenge-evaluation).
+The evaluation of the algorithm is implemented using GitHub Actions (GHA). The provided [CI integration](https://github.com/xsedmid/test-Python2Java/blob/master/.github/workflows/ci.yml) installs requirements (including Java 17), downloads a specified dataset, builds an index on the specified dataset, executes *k*NN queries, and evaluates the results of *k*NN queries using the provided [evaluation script](https://github.com/sisap-challenges/sisap23-laion-challenge-evaluation). The provided evaluation script generates the `res.csv` file which primarily contains the calculated metrics of total index construction time, total query execution time, and average recall (the content of this file is printed on the standard output by the last GHA).
 
 The dataset to be downloaded and indexed is specified by the `--size` parameter (possible values: `"100K"`, `"300K"`, `"10M"`, `"30M"`, `"100M"`, default=`"100K"`). The specified dataset file is downloaded from the [Challenge data site](https://sisap-23-challenge.s3.amazonaws.com/SISAP23-Challenge). The query file `public-queries-10k-clip768v2.h5` to be evaluated over the built index is downloaded from the same site; in case, a different query file with should be evaluated, its name has to be specified by changing the `query_orig` and `query` variables in the `search.py` script:
 ```

@@ -1,4 +1,4 @@
-name: Python CI test
+name: CRANBERRY algorithm (indexing, search, evaluation)
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
       with:
         python-version: 3.11  # Replace with your desired Python version
 
-    - name: Install dependencies
+    - name: Install Python dependencies
       run: pip install -r requirements.txt  # Replace with your requirements file path
 
     - name: Set up JDK 17
@@ -29,7 +29,7 @@ jobs:
         java-version: '17'
         distribution: 'oracle'
     
-    - name: Download and compile Vlada's Java Maven sources
+    - name: Download and compile the CRANBERRY ALGORITHM (Java Maven sources)
       run: |
         git clone https://github.com/VladimirMic/VMGenericTools.git
         cd VMGenericTools
@@ -54,7 +54,7 @@ jobs:
 
     - name: Run Python search script
       run: |
-        python search.py --size 100K --k 10 --buildindex True
+        python3 search.py --size 100K --k 10 --buildindex True
         python3 eval/eval.py
         python3 eval/plot.py res.csv
     
