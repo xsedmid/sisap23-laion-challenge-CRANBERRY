@@ -6,7 +6,7 @@ This repository contains the sources and evaluation scripts of the **CRANBERRY**
 
 The evaluation of the algorithm is implemented using GitHub Actions (GHA). The provided [CI integration](https://github.com/xsedmid/test-Python2Java/blob/master/.github/workflows/ci.yml) installs requirements (including Java 17), downloads a specified dataset, builds an index on the specified dataset, executes *k*NN queries, and evaluates the results of *k*NN queries using the provided [evaluation script](https://github.com/sisap-challenges/sisap23-laion-challenge-evaluation). The provided evaluation script generates the `res.csv` file which primarily contains the calculated metrics of total index construction time, total query execution time, and average recall (the content of this file is printed on the standard output by the last GHA).
 
-The dataset to be downloaded and indexed is specified by the `--size` parameter (possible values: `"100K"`, `"300K"`, `"10M"`, `"30M"`, `"100M"`, default=`"100K"`). The specified dataset file is downloaded from the [Challenge data site](https://sisap-23-challenge.s3.amazonaws.com/SISAP23-Challenge). The query file `public-queries-10k-clip768v2.h5` to be evaluated over the built index is downloaded from the same site; in case, a different query file with should be evaluated, its name has to be specified by changing the `query_orig` and `query` variables in the `search.py` script:
+The dataset to be downloaded and indexed is specified by the `--size` parameter (possible values: `"100K"`, `"300K"`, `"10M"`, `"30M"`, `"100M"`, default=`"100K"`). The specified dataset file is downloaded from the [Challenge data site](https://sisap-23-challenge.s3.amazonaws.com/SISAP23-Challenge). The query file `public-queries-10k-clip768v2.h5` to be evaluated over the built index is downloaded from the same site; in case, a different query file should be evaluated, its name has to be specified by changing the `query_orig` (768D representation) and `query` (PCA96 representation) variables in the `search.py` script:
 ```
 def prepare(root_data_folder, kind, size):
     dataset_url = "https://sisap-23-challenge.s3.amazonaws.com/SISAP23-Challenge"
@@ -17,7 +17,7 @@ def prepare(root_data_folder, kind, size):
         "query": [os.path.join(root_data_folder, 'Dataset', 'Query'), f"public-queries-10k-{kind}.h5"]
     }
 ```
-The `dataset_orig` and `query_orig` represent 768-dimensional features, while the `dataset` and `query` stand for PCA96 features.
+The `dataset_orig` and `query_orig` represent 768-dimensional features, while the `dataset` and `query` stand for PCA96 features. *Note*: new queries can also be evaluated simply by changing the content of the `public-queries-10k-clip768v2.h5` and corresponding `public-queries-10k-pca96v2.h5` files.
 
 ## Description of the CRANBERRY algorithm
 
