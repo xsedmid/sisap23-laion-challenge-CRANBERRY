@@ -22,6 +22,6 @@ The `dataset_orig` and `query_orig` represent 768-dimensional features, while th
 ## Description of the CRANBERRY algorithm
 
 CRANBERRY is a three-phase similarity-search approach implemented in Java (verified on Java JDK 17). Individual phases:
-- (1) Looking for the most relevant cells of Voronoi-like partitioning (stops when 0.5M objects are obtained in the identified cells in total) with respect to a query (PCA96 representation);
-- (2) Filtering the candidate set of 0.5M objects using: sketches, secondary filtering, and the SimREL technique, with respect to the query;
-- (3) Calculating the distances between the query and each retained candidate from the previous step (based on the original 768D represenatations) and returning the *k* most similar as the query result.
+- (1) Looking for the most relevant cells of Voronoi-like partitioning (stops when 1M objects are obtained in the identified cells in total) with respect to a query (original 768D vectors);
+- (2) Filtering the candidate set of 1M objects using: sketches, so-called Secondary Filtering with Sketches, and the SimRel technique, with respect to the query; The early termination is used here;
+- (3) Calculating the distances between the query and each retained candidate from the previous step (based on the original 768D representations) and returning the *k* most similar as the query result.
